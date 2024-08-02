@@ -1,5 +1,6 @@
 package com.tiffinXpress.service;
 
+import com.tiffinXpress.model.ResponseWrapper;
 import com.tiffinXpress.model.Users;
 import com.tiffinXpress.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,8 @@ public class UserService {
     @Autowired
     private UsersRepository usersRepository;
 
-    public void registerUser(Users user){
-        usersRepository.save(user);
+    public ResponseWrapper<Users> registerUser(Users user){
+        Users savedUser = usersRepository.save(user);
+        return new ResponseWrapper<>(true, "User created successfully", null, savedUser);
     }
 }
