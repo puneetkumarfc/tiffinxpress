@@ -3,7 +3,10 @@ package com.tiffinXpress.controller;
 import com.tiffinXpress.model.ResponseWrapper;
 import com.tiffinXpress.model.Users;
 import com.tiffinXpress.service.UserService;
+import jakarta.persistence.PostRemove;
 import jakarta.validation.Valid;
+import org.apache.catalina.User;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatus;
@@ -28,6 +31,17 @@ public class UsersController {
     public ResponseEntity registerUser(@Valid @RequestBody Users users){
         ResponseWrapper<Users> responseWrapper = usersService.registerUser(users);
         return new ResponseEntity<>(responseWrapper, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity loginUser(@RequestBody Map<String,String> loginDetails){
+        String email = loginDetails.get("email");
+        String password = loginDetails.get("password");
+        ResponseWrapper<Users> responseWrapper = usersService.loginUser(email,password);
+        if(!responseWrapper.isStatus()){
+            return new ResponseEntity<>(responseWrapper, HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
     }
 
     @ExceptionHandler
